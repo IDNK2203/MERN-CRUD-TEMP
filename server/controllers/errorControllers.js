@@ -2,7 +2,7 @@ const AppError = require("../utils/appError");
 // break logic into functions api response & view response
 
 const sendDevErrors = (err, req, res) => {
-  console.log("Dev Errors");
+  console.log("Dev Errors", err);
   return res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -12,6 +12,7 @@ const sendDevErrors = (err, req, res) => {
 };
 
 const sendProdErrors = (err, req, res) => {
+  console.log("Prod", err);
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -32,10 +33,8 @@ const handleDuplicateFieldsDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
-  console.log(err);
   const errors = Object.values(err.errors).map((el) => el.message);
   const message = `Invalid input data. ${errors.join(". ")}`;
-  console.log(errors);
   return new AppError(message, 400);
 };
 
@@ -65,7 +64,6 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendDevErrors(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
-    console.log("Prod");
     let error = JSON.parse(JSON.stringify(err));
     error.message = err.message;
     if (error.name === "CastError") error = handleCastErrorDB(error);
