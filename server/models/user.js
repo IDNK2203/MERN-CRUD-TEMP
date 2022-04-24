@@ -1,6 +1,7 @@
 const bcryptjs = require("bcryptjs");
 const mongoose = require("mongoose");
 const validator = require("validator");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -46,6 +47,9 @@ const userSchema = new mongoose.Schema(
         message: "password and passwordConfirm value do not match",
       },
     },
+    passwordResetToken: String,
+    tokenExpiresAt: Date,
+    updatePasswordAt: Date,
   },
   {
     timestamps: true,
@@ -53,19 +57,43 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  console.log("presave middleware");
-
   if (!this.isModified("password")) return next();
 
   this.password = await bcryptjs.hash(this.password, 12);
   this.passwordConfirm = undefined;
-  console.log(this.password);
+  next();
+});
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.updatePasswordAt = Date.now() + 1000;
   next();
 });
 
 userSchema.method({
   passwordCheck: async function (incomingPwd) {
     return await bcryptjs.compare(incomingPwd, this.password);
+  },
+  updatePasswordAtCheck: function (tokenIat) {
+    if (this.updatePasswordAt) {
+      console.log("Yoo Levi, Reiner");
+      const passwordDate = new Date(this.updatePasswordAt);
+      const tokenDate = new Date(tokenIat * 1000);
+
+      return passwordDate > tokenDate;
+    }
+    return false;
+  },
+  createPasswordResetToken: function () {
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    this.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    this.tokenExpiresAt = Date.now() + 10 * 60 * 1000;
+    return resetToken;
   },
 });
 
