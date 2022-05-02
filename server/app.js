@@ -4,7 +4,7 @@ const AppError = require("./utils/appError");
 const globalErrorhandler = require("./controllers/errorControllers");
 const authControllers = require("./controllers/authControllers");
 const cookieParser = require("cookie-parser");
-
+const cors = require("cors");
 // Route
 const userRoutes = require("./routes/authRoutes");
 
@@ -12,6 +12,7 @@ const userRoutes = require("./routes/authRoutes");
 const app = express();
 
 // boilerplate middleware
+app.use(cors());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
