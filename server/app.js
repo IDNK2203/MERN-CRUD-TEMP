@@ -2,11 +2,11 @@ const express = require("express");
 const logger = require("morgan");
 const AppError = require("./utils/appError");
 const globalErrorhandler = require("./controllers/errorControllers");
-const authControllers = require("./controllers/authControllers");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // Route
-const userRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
+const recipeRoutes = require("./routes/recipeRoutes");
 
 // setup express app
 const app = express();
@@ -22,12 +22,9 @@ if (app.get("env") !== "production") {
   app.use(logger("dev"));
 }
 
-app.get("/test-route", authControllers.protect, (req, res) => {
-  res.send("A small step for man but a gaint leap for humanity 🚀👨🏿‍🚀");
-});
-
 // API Routes
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/recipe", recipeRoutes);
 
 // catch 404 and forward to error handler
 app.all("*", (req, res, next) => {

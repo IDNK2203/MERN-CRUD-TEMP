@@ -1,9 +1,10 @@
 const bcryptjs = require("bcryptjs");
 const mongoose = require("mongoose");
-const validator = require("validator");
 const crypto = require("crypto");
+const validator = require("validator");
 
-const userSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+const userSchema = Schema(
   {
     firstName: {
       type: String,
