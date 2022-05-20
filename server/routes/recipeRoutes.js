@@ -3,6 +3,7 @@ const recipeControllers = require("../controllers/recipeControllers");
 const authControllers = require("../controllers/authControllers");
 
 router.get("/", recipeControllers.getRecipes);
+router.get("/myrecipe",authControllers.protect, recipeControllers.getMyRecipes);
 router.get("/:id", recipeControllers.getARecipe);
 router.use(authControllers.protect);
 router.post("/", recipeControllers.createRecipe);

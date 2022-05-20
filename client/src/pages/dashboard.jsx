@@ -1,40 +1,76 @@
-import { Link } from "react-router-dom";
+import Header from "../components/Header";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutThunk } from "../features/auth/authSlice";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  fetchMyRecipes,
+  reset,
+  deleteRecipe,
+} from "../features/recipe/recipeSlice";
 
-const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
+const Home = () => {
+  const [delReStatus, setdelReStatus] = useState("idle");
+  const [delReErrorMsg, setdelReErrorMsg] = useState("idle");
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleLogout = () => {
-    dispatch(logoutThunk);
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!user) navigate("/");
+    dispatch(fetchMyRecipes());
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, navigate, dispatch]);
+
+  const { status, recipes, errorMsg } = useSelector((state) => state.recipes);
+
+  const deleteRecipeHandler = async (id, e) => {
+    if (delReStatus === "idle") {
+      try {
+        await dispatch(deleteRecipe(id)).unwrap();
+      } catch (error) {
+        setdelReStatus("error");
+        setdelReErrorMsg(error);
+      } finally {
+        setdelReStatus("idle");
+      }
+    }
   };
 
   return (
-    <div className="container">
-      <nav className="nav">
-        <div className="nav_brand">
-          Recipe Chef
-          <ul className="navlist">
-            {user ? (
-              <li className="nav-item">
-                <button onClick={handleLogout}>Logout</button>
-              </li>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link to={"/register"}>Register</Link>
+    <div>
+      <Header />
+      <main>
+        <div>
+          {status === "pending" && <div>Spinner</div>}
+          {status === "success" && recipes.length > 0 ? (
+            <ul>
+              {recipes.map((el) => (
+                <li key={el._id}>
+                  <p> {"Dish Name " + el.dishName}</p>
+                  <p> {"Chef " + el.chef.firstName}</p>
+                  <Link to={"/update/" + el._id}>Update</Link>
+                  <button onClick={(e) => deleteRecipeHandler(el._id, e)}>
+                    Delete
+                  </button>
                 </li>
-                <li className="nav-item">
-                  <Link to={"/login"}>Login</Link>
-                </li>
-              </>
-            )}
-          </ul>
+              ))}
+            </ul>
+          ) : status === "success" && recipes.length <= 0 ? (
+            <p>
+              there are no recipes currently😊, Be the first to create a recipe
+            </p>
+          ) : (
+            ""
+          )}
+          {status === "error" && <div>{errorMsg}</div>}
+          {/* {delReStatus === "error" && <div>{delReErrorMsg}</div>} */}
         </div>
-      </nav>
-      <h1> Welcome to your dashboard {user && user.user.firstName}</h1>
+      </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default Home;

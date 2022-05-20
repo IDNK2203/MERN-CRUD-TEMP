@@ -3,6 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 exports.createRecipe = catchAsync(async (req, res, next) => {
+  console.log({ ...req.body });
   const payload = { ...req.body, chef: req.user._id };
   const recipe = await Recipe.create(payload);
   res.status(201).json({
@@ -13,6 +14,14 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
 
 exports.getRecipes = catchAsync(async (req, res, next) => {
   const recipes = await Recipe.find({}).populate("chef");
+  res.status(200).json({
+    status: "success",
+    recipes,
+  });
+});
+
+exports.getMyRecipes = catchAsync(async (req, res, next) => {
+  const recipes = await Recipe.find({ chef: req.user._id }).populate("chef");
   res.status(200).json({
     status: "success",
     recipes,
@@ -35,6 +44,7 @@ exports.deleteRecipe = catchAsync(async (req, res, next) => {
 
 exports.updateRecipe = catchAsync(async (req, res, next) => {
   const recipeCheck = await Recipe.findById(req.params.id);
+
   if (!recipeCheck) return next(new AppError("the recipe was not found", 404));
 
   if (recipeCheck.chef._id.toString() !== req.user._id.toString()) {
@@ -46,7 +56,8 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
-  res.status(204).json({
+  console.log(recipe);
+  res.status(201).json({
     status: "success",
     recipe,
   });

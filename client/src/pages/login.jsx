@@ -16,13 +16,14 @@ const Login = () => {
 
   const { status, errorMsg, user } = useSelector((state) => state.auth);
 
+  // redundant code
   useEffect(() => {
     dispatch(reset());
   }, [dispatch]);
 
   useEffect(() => {
     if (user || status === "success") navigate("/");
-  }, [user, status, navigate, dispatch]);
+  }, [user, status, navigate,]);
 
   if (status === "pending") {
     return <div>Spinner</div>;
