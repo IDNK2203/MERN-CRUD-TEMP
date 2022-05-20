@@ -1,49 +1,26 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { register, reset } from "../features/auth/authSlice";
+import { register } from "../features/auth/authSlice";
+import useReset from "../hooks/useReset";
+import useAuthForm from "../hooks/useAuthForm";
+import useAuthRedir from "../hooks/useAuthRedir";
 
 const Register = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [formData, setformData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    passwordConfirm: "",
-  });
+  useReset();
+  const { handleSumbit, changeFormData, formData } = useAuthForm(
+    {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    },
+    register
+  );
 
-  const { status, errorMsg } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    dispatch(reset());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (status === "success") navigate("/");
-  }, [status, navigate]);
-
-  if (status === "pending") {
-    return <div>Spinner</div>;
-  }
-
-  const changeFormData = (e) => {
-    setformData((prev) => {
-      return {
-        ...prev,
-        [e.target.name]: e.target.value,
-      };
-    });
-  };
-
-  const handleSumbit = (e) => {
-    e.preventDefault();
-    dispatch(register(formData));
-  };
-
+  const { status, errorMsg } = useAuthRedir();
   return (
     <div className="container">
+      {status === "pending" && <div>spinner</div>}
+
       <div className="form-heading">
         <h2>Registeration Form</h2>
       </div>
