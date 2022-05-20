@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import RecipeForm from "./pages/RecipeForm";
 import SingleRecipe from "./pages/SingleRecipe";
 import UpdateRecipeForm from "./pages/UpdateRecipeForm";
+import AuthRedir from "./components/AuthRedir";
 
 function App() {
   return (
@@ -14,11 +15,26 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/:id" element={<SingleRecipe />} />
-          <Route path="/my-recipes" element={<Dashboard />} />
-          <Route path="/create" element={<RecipeForm />} />
-          <Route path="/update/:id" element={<UpdateRecipeForm />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/create"
+            element={<AuthRedir children={<RecipeForm />} />}
+          />
+          <Route
+            path="/update/:id"
+            element={<AuthRedir children={<UpdateRecipeForm />} />}
+          />
+          <Route
+            path="/my-recipes"
+            element={<AuthRedir children={<Dashboard />} />}
+          />
+          <Route
+            path="/login"
+            element={<AuthRedir type={"ap"} children={<Login />} />}
+          />
+          <Route
+            path="/register"
+            element={<AuthRedir type={"ap"} children={<Register />} />}
+          />
         </Routes>
       </Router>
     </div>

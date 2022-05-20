@@ -14,7 +14,7 @@ const Login = () => {
     passwordConfirm: "",
   });
 
-  const { status, errorMsg, user } = useSelector((state) => state.auth);
+  const { status, errorMsg } = useSelector((state) => state.auth);
 
   // redundant code
   useEffect(() => {
@@ -22,8 +22,8 @@ const Login = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (user || status === "success") navigate("/");
-  }, [user, status, navigate,]);
+    if (status === "success") navigate("/");
+  }, [status, navigate]);
 
   if (status === "pending") {
     return <div>Spinner</div>;

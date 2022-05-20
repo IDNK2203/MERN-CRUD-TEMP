@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../features/auth/authSlice";
+import { register, reset } from "../features/auth/authSlice";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -14,15 +14,15 @@ const Register = () => {
     passwordConfirm: "",
   });
 
-  const { status, errorMsg, user } = useSelector((state) => state.auth);
-
-  // useEffect(() => {
-  //   dispatch(reset());
-  // }, [dispatch]);
+  const { status, errorMsg } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user || status === "success") navigate("/");
-  }, [user, status, navigate]);
+    dispatch(reset());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (status === "success") navigate("/");
+  }, [status, navigate]);
 
   if (status === "pending") {
     return <div>Spinner</div>;
