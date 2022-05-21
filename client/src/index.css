@@ -28,10 +28,19 @@ a {
   text-decoration: none;
   /* margin: 20px; */
 }
-a:hover {
+nav a:hover {
   color: blue;
   text-decoration: underline;
 }
+.spinner {
+  width: 80px;
+  height: 80px;
+  border: 2px solid blue;
+  border-radius: 50%;
+  border-left-color: red;
+  animation: spin 2s infinite;
+}
+
 li,
 ul {
   list-style: none;
@@ -50,6 +59,7 @@ ul {
 nav {
   display: flex;
   justify-content: space-around;
+  /* flex-wrap: wrap; */
 }
 nav ul {
   display: flex;
@@ -78,4 +88,10 @@ main ul li {
 main ul li p:hover {
   color: crimson;
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  nav {
+    flex-direction: column;
+  }
 }

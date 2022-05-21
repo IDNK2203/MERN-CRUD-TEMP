@@ -14,7 +14,7 @@ const SingleRecipe = () => {
     <div>
       <Header />
       <main>
-        {status === "pending" && <div>Spinner</div>}
+        {status === "pending" && <div className="spinner">Spinner</div>}
         {status === "success" && (
           <li>
             <p> {"Dish Name " + data.recipe.dishName}</p>

@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import RecipeForm from "./pages/RecipeForm";
+import RecipeForm from "./pages/Recipe";
 import SingleRecipe from "./pages/SingleRecipe";
 import UpdateRecipeForm from "./pages/UpdateRecipeForm";
 import AuthRedir from "./components/AuthRedir";
@@ -21,7 +21,7 @@ function App() {
           />
           <Route
             path="/update/:id"
-            element={<AuthRedir children={<UpdateRecipeForm />} />}
+            element={<AuthRedir children={<RecipeForm />} />}
           />
           <Route
             path="/my-recipes"

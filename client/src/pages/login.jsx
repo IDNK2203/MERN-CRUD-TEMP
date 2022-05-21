@@ -17,7 +17,7 @@ const Login = () => {
 
   return (
     <div className="container">
-      {status === "pending" && <div>spinner</div>}
+      {status === "pending" && <div className="spinner">spinner</div>}
       <div className="form-heading">
         <h2>Login Form</h2>
       </div>
